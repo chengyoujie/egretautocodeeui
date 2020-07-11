@@ -96,13 +96,29 @@ export class FileUtil{
             url = path.normalize(url); 
             this.walkDir(url, (walkUrl:string)=>{
                 let walkToUrl = walkUrl.replace(url, toUrl);
-                if(!override && fs.existsSync(walkToUrl))return;
-                fs.copyFileSync(walkUrl, walkToUrl);
+                this.copyFileSync(walkUrl, walkToUrl, override);
             });
         }else{
-            if(!override && fs.existsSync(toUrl))return;
-            fs.copyFileSync(url, toUrl);
+            this.copyFileSync(url, toUrl, override);
         }
-        
     }
+
+    /**
+     * 同步拷贝文件
+     * @param url 
+     * @param toUrl 
+     * @param override 
+     */
+    private static copyFileSync(url:string, toUrl:string, override:boolean=true)
+    {
+        if(!override && fs.existsSync(toUrl))return;
+        if(fs.copyFileSync)//有的版本的nodejs可能没有这个方法导致报错
+        {
+            fs.copyFileSync(url, toUrl);
+        }else{
+            let data = fs.readFileSync(url);
+            fs.writeFileSync(toUrl, data);
+        }
+    }
+
 }

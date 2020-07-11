@@ -82,7 +82,7 @@ export class AppData{
     {
         if(!this._userConfigPath)
         {
-            this._userConfigPath = path.join(os.homedir(), "/AppData/Local/egret-autocode", "user.config.json");
+            this._userConfigPath = path.join(__dirname, "./../config/user.config.json");//path.join(os.homedir(), "/AppData/Local/egret-autocode", "user.config.json");
         }
         return this._userConfigPath;
     }
