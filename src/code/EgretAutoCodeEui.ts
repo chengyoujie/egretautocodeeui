@@ -3,6 +3,7 @@
 import * as path from "path";
 import { Log } from "../tools/Log";
 import { EXmlParser } from "./ExmlParser";
+import { TSParser } from "./TSParser";
 
 export interface IParser{
 
@@ -31,3 +32,5 @@ export class EgretAutoCodeEui{
     }
 }
 EgretAutoCodeEui.registerParser("exml", EXmlParser);
+//因为写死的对外先不开放
+// EgretAutoCodeEui.registerParser("ts", TSParser);
