@@ -1,0 +1,31 @@
+{
+    "defaultCreateIndex":0,
+    "skinRootPath":"resource/skin/module/",
+    "moduleCodePath":"src/game/module/",
+    "create":
+    [   
+        {"keyword":"View",  "useTemplate":"1,2", "keywordusereg":false},
+        {"keyword":"Render", "useTemplate":"3,4", "keywordusereg":false}
+    ],
+    
+    "template":
+    {
+        "1":{"id":1,    "name":"UI",        "file":"UI.txt",            "outdir":"${workspace}/src/declare/ui",            "override":true,     "checkfloder":false,   "fileType":"d.ts"},
+        "2":{"id":2,    "name":"View",      "file":"View.txt",          "outdir":"",                            "override":false,   "checkfloder":false,   "fileType":"ts"},
+        "3":{"id":3,    "name":"RenderUI",  "file":"RenderUI.txt",      "outdir":"${workspace}src/declare/ui",            "override":true,     "checkfloder":false,   "fileType":"d.ts"},
+        "4":{"id":4,    "name":"Render",    "file":"Render.txt",        "outdir":"",                            "override":false,   "checkfloder":false,   "fileType":"ts"},
+        "5":{"id":5,    "name":"Module",    "file":"Module.txt",        "outdir":"${workspace}src/game/model/${parentDir}",    "override":false,   "checkfloder":true,   "fileType":"ts"}
+    },
+    "timeFormat":"yyyy-MM-dd hh:mm:ss",
+
+    "idVisit":[
+        {
+            "nameHas":"btn",
+            "typeHas":"eui.Button",
+            "code1":"\n\t\t\tthis.${id}.addEventListener(egret.TouchEvent.TOUCH_TAP, this.handleClk${ShortId}, this)",
+            "exportCode1":"initEvent",
+            "code2":"\n\t\t/**${id}点击事件处理**/\n\t\tprivate handleClk${ShortId}(){\n\t\t\n\t\t}\n\t\t",
+            "exportCode2":"eventFunction"
+        }
+    ]
+}

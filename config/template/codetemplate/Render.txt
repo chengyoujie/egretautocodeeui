@@ -1,0 +1,21 @@
+namespace byh {
+    /**
+     * AutoCodeEui 生成的界面 
+     * euiPath:${shortSkinPath}  
+     * made by ${auth}
+     * create on ${time} 
+    */
+    export class ${shortName}Render extends BaseRender {
+    
+        constructor() {
+            super();
+        }
+        
+        /** 数据发生改变 */
+        public dataChanged(): void {
+            super.dataChanged();
+        }
+    }
+}
+
+    

@@ -1,0 +1,20 @@
+module byh {
+    /**
+     * AutoCodeEui 生成的界面 
+     * euiPath:${shortSkinPath}  
+     * made by ${auth}
+     * create on ${time} 
+    */
+	export class ${shortName}Model extends BaseModel {
+		public constructor() {
+			super();
+		}
+
+		/**接受协议 */
+		//private n_xxx(vo: S_XXXX) {
+		//	let s = this;
+		//}
+	}
+
+	export let ${shortname}Model: ${shortName}Model;
+}

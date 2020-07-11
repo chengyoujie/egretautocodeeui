@@ -1,0 +1,27 @@
+namespace byh {
+    /**
+     * AutoCodeEui 生成的界面 
+     * euiPath:${shortSkinPath}  
+     * made by ${auth}
+     * create on ${time} 
+    */
+    export class ${shortName}View extends Component {
+
+        constructor(opt?: ShowOptions){
+            super(opt);
+            this.skinName = '${skinName}';
+        }
+
+        /**界面打开**/
+        public onOpen() {
+            ${initEvent}
+        }
+
+        ${eventFunction}
+
+        /**界面销毁**/
+        public destroy(): void {
+            super.destroy();
+        }
+    }
+}
