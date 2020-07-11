@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="TestPanelSkin" width="400" height="378.67" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing">
+	<e:Image width="401" height="378.67" y="-2.33" source="border_png" anchorOffsetX="0" anchorOffsetY="0" x="0"/>
+	<e:Button id="btnSuper" label="确认" x="153" y="314" anchorOffsetY="0" height="43.34"/>
+	<e:Scroller width="384" height="261" x="11" y="33.34" anchorOffsetX="0" anchorOffsetY="0">
+		<e:List id="list" itemRendererSkinName="TestRenderSkin"/>
+	</e:Scroller>
+	<e:Label id="title" text="标题" x="4" textColor="0x000000" anchorOffsetX="0" width="394.67" anchorOffsetY="0" height="35.33" textAlign="center"/>
+</e:Skin>

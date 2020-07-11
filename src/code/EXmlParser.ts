@@ -15,11 +15,11 @@ import { DateUtils } from "../tools/DateUtils";
 export interface TemplateVars{
     /**生成代码者名字 */
     auth?:string;
-    /**生成时间 */
+    /**生成时间  格式可在 `autocodeconfig.json`的`timeFormat` 中配置*/
     time?:string;
     /**生成代码的exml 文件路径 */
     skinPath?:string;
-    /**生成代码的exml的相对路径 */
+    /**生成代码的exml的相对（工作空间）路径 */
     shortSkinPath?:string;
     /**Exml文件的名字 */
     fileName?:string;
@@ -27,14 +27,8 @@ export interface TemplateVars{
     baseClsName?:string;
     /**皮肤的名字 */
     skinName?:string;
-    /**初始化按钮点击事件 */
-    initEvent?:string;
-    /**按钮点击的回调 */
-    eventFunction?:string;
     /**当前 exml文件相对于 模板配置autocode.config中skinRootPath的目录 */
     parentDir?:string;
-    // /**皮肤里的id信息 */
-    // ids?:IdInfo[];
     /**变量的声明 变量前有public  如：public img:eui.Image;*/
     varids?:string;
     /**interface中变量的声明 如  img:eui.Image;*/
@@ -198,7 +192,7 @@ export class EXmlParser implements IParser{
             return;
         }
         // 生成 shortName及ModuleId变量
-        let keywords = createInfo.keyword.split("|");
+        let keywords = createInfo.nameHas.split("|");
         for(let j=0; j<keywords.length; j++)
         {
             if(templateVars.baseClsName.indexOf(keywords[j]) != -1)
@@ -233,7 +227,7 @@ export class EXmlParser implements IParser{
         }
         let templateVars:TemplateVars = this._tempVars;
         let templateTxt = fs.readFileSync(templatePath, "utf-8");
-        let outDirPath = path.join(AppData.workspace, AppData.autoCodeConfig.moduleCodePath+templateVars.parentDir+"/");
+        let outDirPath = path.join(AppData.workspace, AppData.autoCodeConfig.codeRootPath+templateVars.parentDir+"/");
         if(templateInfo.outdir)
         {
             outDirPath = StringUtil.replaceVars(templateInfo.outdir, templateVars);

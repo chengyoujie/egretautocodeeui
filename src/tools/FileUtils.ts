@@ -77,8 +77,13 @@ export class FileUtil{
         }
     }
     
-
-    public static copy(url:string, toUrl:string)
+    /**
+     * 拷贝文件
+     * @param url 
+     * @param toUrl 
+     * @param override 
+     */
+    public static copy(url:string, toUrl:string, override:boolean=true)
     {
         if(!fs.existsSync(url))
         {
@@ -91,9 +96,11 @@ export class FileUtil{
             url = path.normalize(url); 
             this.walkDir(url, (walkUrl:string)=>{
                 let walkToUrl = walkUrl.replace(url, toUrl);
+                if(!override && fs.existsSync(walkToUrl))return;
                 fs.copyFileSync(walkUrl, walkToUrl);
             });
         }else{
+            if(!override && fs.existsSync(toUrl))return;
             fs.copyFileSync(url, toUrl);
         }
         

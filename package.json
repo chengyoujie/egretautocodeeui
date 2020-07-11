@@ -1,10 +1,14 @@
 {
 	"name": "egretautocodeeui",
 	"displayName": "egretAutoCodeEui",
-	"description": "exml生成对应的代码模块【女神项目组】",
+	"description": "exml生成对应的代码模块",
 	"version": "0.0.1",
-	"publisher": "程有杰",
+	"publisher": "chengyoujie",
 	"icon": "icon/icon.png",
+	"repository": {
+        "type": "git",
+        "url":"https://github.com/chengyoujie/egretautocodeeui.git"
+    },
 	"engines": {
 		"vscode": "^1.46.0"
 	},
@@ -12,7 +16,11 @@
 		"Other"
 	],
 	"activationEvents": [
-        "*"
+		"onCommand:egretautocodeeui.egretautocodeeui",
+		"onCommand:egretautocodeeui.egretautocodeuserconfig",
+		"onCommand:egretautocodeeui.egretautocodeconfig",
+		"onCommand:egretautocodeeui.egretautocoderefushconfig",
+		"onCommand:egretautocodeeui.egretautocodetemplate"
 	],
 	"main": "./dist/extension.js",
 	"contributes": {

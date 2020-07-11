@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="TestRenderSkin" width="400" height="76" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing">
+	<e:Image width="402" height="73" x="-2" y="1" anchorOffsetX="0" anchorOffsetY="0" source="header_png"/>
+	<e:Label id="lbl_des" text="测试Render" x="19" y="22.5"/>
+</e:Skin>

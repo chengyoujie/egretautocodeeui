@@ -1,9 +1,7 @@
 # Change Log
 
-All notable changes to the "egretautocodeeui" extension will be documented in this file.
-
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
+ [github 地址](https://github.com/chengyoujie/egretautocodeeui) 
 
 ## [Unreleased]
 
-- Initial release
+- 测试版： 自动生成代码

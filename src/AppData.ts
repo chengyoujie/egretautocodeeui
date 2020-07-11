@@ -9,12 +9,12 @@ export interface AutoCodeConfig{
     defaultCreateIndex:number;
     create:CreateInfo[];
     template:{[id:number]:TemplateInfo};
-    moduleCodePath:string;
+    codeRootPath:string;
     /**皮肤的根路径 */
     skinRootPath:string;
-    /**时间的格式 */
+    /**时间的格式 如：yyyy-MM-dd hh:mm:ss 用于模板中的${time}变量*/
     timeFormat:string;
-    /**id检索 */
+    /**id检索 遍历exml中遍历*/
     idVisit:IdVisitInfo[];
 }
 
@@ -25,33 +25,33 @@ export interface AutoCodeConfig{
 export interface IdVisitInfo{
     /**id的名字中包含的关键字 */
     nameHas:string;
-    /**id的类型中包含的关键字 */
+    /**id对应的类型中包含的关键字 */
     typeHas:string;
-    /**如果id中含有key则生成代码x中的代码 */
+    /**如果id满足`nameHas`或者`typeHas` 则将 `code[数字]` 的内容 添加到对应的变量`exportCode[数字]` 中 其中`${id}` 为 当前exml中的id， `${Id}` 为 id的首字母大写， `${shortId}` 为 id去掉`nameHas`及下划线_后的值，`${ShortId}` 为 `shortId`首字母大写后的值*/
     code1?:string;
-    /**生成的代码x的字符传  在模板文件的关键字名称 */
+    /**`code[数字]`对应的值 在模板文件的关键字名称 */
     exportCode1?:string;
 }
 
 /**创建模板的信息 */
 interface CreateInfo{
     /**文件名中包含的特殊字符串， 如果多个可以用 | 分开 */
-    keyword:string;
+    nameHas:string;
     /**使用那些模板生成 多个可以用,分开 */
     useTemplate:string;
-    /**keyword 是否使用正则匹配 */
-    keywordusereg:boolean;
+    /**nameHas 是否使用正则匹配 */
+    useReg:boolean;
 }
 
 /**每个具体模板的信息 */
 interface TemplateInfo{
     /**模板的标识id */
     id:number;
-    /**模板的名字  生成类名时 基础名字$baseClsName）加上name 作为类名  如要改动最好也检查下对应的模板文件（写死的）中*/
+    /**模板的名字  生成类名时 基础名字 `$baseClsName` 加上name 作为类名  如要改动最好也检查下对应的模板文件（写死的）中*/
     name:string;
     /**模板文件名  在module/路径下 */
     file:string;
-    /** 生成文件时 在对应模块文件下新建的文件夹名字*/
+    /** 生成文件夹 如果不填使用 `codeRootPath`  如果填了则使用配置的路径下*/
     outdir:string;
     /** 是否覆盖 true 每次生成都覆盖  false 如果有了就不生成了 */
     override:boolean;
@@ -63,6 +63,7 @@ interface TemplateInfo{
 
 import * as fs from "fs";
 import * as path from "path";
+import * as os from "os";
 import { Log } from "./tools/Log";
 import { FileUtil } from "./tools/FileUtils";
 import { StringUtil } from "./tools/StringUtils";
@@ -81,7 +82,7 @@ export class AppData{
     {
         if(!this._userConfigPath)
         {
-            this._userConfigPath = path.join(__dirname, "./../config/user.config");
+            this._userConfigPath = path.join(os.homedir(), "/AppData/Local/egret-autocode", "user.config.json");
         }
         return this._userConfigPath;
     }
@@ -91,18 +92,16 @@ export class AppData{
     {
         if(!this._userConfig)
         {
-            let cfgPath = path.join(__dirname, "./../config/user.config");
+            let cfgPath = this.userConfigPath;
             if(fs.existsSync(cfgPath))
             {
                 this._userConfig = this.getJsonData(cfgPath);
             }
             if(!this._userConfig)
             {
-                this._userConfig = {auth:"",  autoCodeConfigPath:"${workspace}/autocode.config.json", templetePath:"${workspace}/template/autocode"};
-                Log.log("没有找到用户配置自动创建："+cfgPath);
-                let cfgStr = JSON.stringify(this._userConfig);
-                FileUtil.checkOrCreateDir(cfgPath);
-                fs.writeFileSync(cfgPath, cfgStr, "utf-8");
+                let defaultUserCfgPath = path.join(__dirname, "./../config/user.config.json");
+                this._userConfig = this.getJsonData(defaultUserCfgPath);
+                FileUtil.copy(defaultUserCfgPath, this.userConfigPath);
             }
             StringUtil.replaceAllVars(this._userConfig);
             this._userConfig.templetePath = path.normalize(this._userConfig.templetePath);
@@ -136,7 +135,7 @@ export class AppData{
                 FileUtil.copy(defaultAutoCfgPath, autoCfgPath);
                 //template 中的module也顺便拷过去
                 let defaultAutoTemplatePath = path.join(__dirname, "./../config/template/codetemplate");
-                FileUtil.copy(defaultAutoTemplatePath, this.userConfig.templetePath);
+                FileUtil.copy(defaultAutoTemplatePath, this.userConfig.templetePath, false);
             }else{ 
                 this._autoCodeConfig = this.getJsonData(autoCfgPath);
             }
@@ -151,19 +150,19 @@ export class AppData{
         for(let i=0; i<creates.length; i++)
         {
             let create = creates[i];
-            var keys = create.keyword.split("|");
+            var keys = create.nameHas.split("|");
             for(let j=0; j<keys.length; j++)
             {
-                if(create.keywordusereg)//使用正则
+                if(create.useReg)//使用正则
                 {
                     try{
-                        let reg = new RegExp(create.keyword, "gi");
+                        let reg = new RegExp(create.nameHas, "gi");
                         if(reg.test(skinFileName))
                         {
                             return create;
                         }
                     }catch(e){
-                        Log.log("create中正则错误："+this.userConfig.autoCodeConfigPath+" create:"+create.keyword);
+                        Log.log("create中正则错误："+this.userConfig.autoCodeConfigPath+" create:"+create.nameHas);
                     }
                 }else{
                     if(skinFileName.indexOf(keys[j]) != -1)
