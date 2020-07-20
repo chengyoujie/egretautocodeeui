@@ -16,6 +16,8 @@ export interface AutoCodeConfig{
     timeFormat:string;
     /**id检索 遍历exml中遍历*/
     idVisit:IdVisitInfo[];
+    /**文件检索信息 */
+    fileVisit?:FileVisitInfo[];
 }
 
 
@@ -31,6 +33,22 @@ export interface IdVisitInfo{
     code1?:string;
     /**`code[数字]`对应的值 在模板文件的关键字名称 */
     exportCode1?:string;
+}
+
+/**
+ * 文件访问
+ */
+export interface FileVisitInfo{
+    /**当前编辑的文件  如果需要使用正则则需要设置useReg为true */
+    nameHas:string;
+    /**文件名称匹配是否使用正则 */
+    useReg:boolean;
+    /**执行程序 */
+    exec:string;
+    /**执行程序的参数 */
+    execParam:string;
+    /**执行程序的工作目录  空则表示使用当前工作空间 */
+    execWorkSpace:string;
 }
 
 /**创建模板的信息 */
@@ -136,6 +154,9 @@ export class AppData{
                 //template 中的module也顺便拷过去
                 let defaultAutoTemplatePath = path.join(__dirname, "./../config/template/codetemplate");
                 FileUtil.copy(defaultAutoTemplatePath, this.userConfig.templetePath, false);
+                //script也拷过去 中的module也顺便拷过去
+                let defaultAutoScriptPath = path.join(__dirname, "./../config/template/autocodescript/onTsFile.js");
+                FileUtil.copy(defaultAutoScriptPath, this.workspace+"/scripts/autocode/onTsFile.js", false);
             }else{ 
                 this._autoCodeConfig = this.getJsonData(autoCfgPath);
             }
