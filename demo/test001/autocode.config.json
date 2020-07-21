@@ -27,5 +27,21 @@
             "code2":"\n\t\t/**${id}点击事件处理**/\n\t\tprivate handleClk${ShortId}(){\n\t\t\n\t\t}\n\t\t",
             "exportCode2":"eventFunction"
         }
+    ],
+    "fileVisit":[
+        {
+            "nameHas":"\\.ts$",
+            "useReg":true,
+            "exec":"node",
+            "execWorkSpace":"",
+            "execParam":"${workspace}/scripts/autocode/onTsFile.js ${filePath} ${selectStart} ${selectEnd}"
+        },
+        {
+            "nameHas":"index.html",
+            "useReg":false,
+            "execWorkSpace":"",
+            "exec":"${filePath}",
+            "execParam":""
+        }
     ]
 }

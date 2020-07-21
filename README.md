@@ -87,6 +87,17 @@
 
 >> **exportCode`数字`**  `code[数字]`对应的值 在模板文件的关键字名称
 
+> **fileVisit** 当前打开的文件 执行`F12`或`Egret AutoCode Exml生成代码` 时如果满足`nameHas`的条件后执行配置的程序
+
+>> **nameHas** id的名字中包含的关键字
+
+>> **useReg** `nameHas`匹配时是否使用正则
+
+>> **exec**  满足条件后执行的程序
+
+>> **execWorkSpace** 程序执行的工作目录， 默认为当前的工作目录
+
+>> **execParam** 执行的参数   可选变量 `${filePath}` 当前打开的文件目录 , `${selectStart}`当前文件中选择的开始位置, `${selectEnd}` 当前文件中选择结束的位置  `${workspace}`为当前编辑器的工作路径
 ---
 
 ## 模板文件中的变量

@@ -1,5 +1,5 @@
 
-import * as process from "child_process";
+import * as childProcess from "child_process";//名字不能为process 否则wing中会执行不了插件
 
 export type CmdCallBack = (str:string)=>void;
 
@@ -14,7 +14,7 @@ export class  CMD{
      */
     public static async run(cmd:string, thisObj?:any, onSuccess?:CmdCallBack, onError?:CmdCallBack, workspace:string=undefined)
     {
-        let p = process.exec(cmd, {encoding:"utf8", cwd:workspace}, function(err:process.ExecException, stdout:any, stderr:any){
+        let p = childProcess.exec(cmd, {encoding:"utf8", cwd:workspace}, function(err:childProcess.ExecException, stdout:any, stderr:any){
             if(err)
             {
                 if(onError)

@@ -7,7 +7,6 @@ var fs = require("fs");
 var path = require("path");
 var progress = require("process");
 console.log("开始解析ts文件");
-console.log("===输入参数====");
 for(let key in progress.argv)
 {
 	console.log("key: "+key+ " value:"+progress.argv[key]);
