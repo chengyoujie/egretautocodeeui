@@ -3,7 +3,6 @@
 import * as path from "path";
 import { Log } from "../tools/Log";
 import { EXmlParser } from "./ExmlParser";
-import { TSParser } from "./TSParser";
 import { AppData, FileVisitInfo } from "../AppData";
 import { CMD } from "../tools/CMD";
 import * as vscode from 'vscode';
@@ -93,6 +92,10 @@ export class EgretAutoCodeEui{
         let runCode = exec+" "+param;
         CMD.run(runCode, this, (str:string)=>{
             Log.log("执行成功："+runCode);
+            if(vscode.window.activeTextEditor)
+            {
+                vscode.window.activeTextEditor.document.save();
+            }
         }, (err:string)=>{
             Log.error("执行失败"+runCode+" Error: "+err);
         }, workSpace);
@@ -101,5 +104,3 @@ export class EgretAutoCodeEui{
 
 }
 EgretAutoCodeEui.registerParser("exml", EXmlParser);
-//因为写死的对外先不开放
-// EgretAutoCodeEui.registerParser("ts", TSParser);
