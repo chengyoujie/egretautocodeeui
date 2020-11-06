@@ -120,5 +120,99 @@ export class FileUtil{
             fs.writeFileSync(toUrl, data);
         }
     }
+    
+    // /**
+    //  * 监听具体的文件变化
+    //  * @param filePath 
+    //  * @param listener 
+    //  */
+    // public static watchFile(filePath:string, listener:(curr: fs.Stats, prev: fs.Stats) => void){
+    //     fs.watchFile(filePath, listener);
+    // }
+
+    // /**
+    //  * 去除监听文件的变化
+    //  * @param filePath 
+    //  * @param listener 
+    //  */
+    // public static unWatchFile(filePath:string, listener?:(curr: fs.Stats, prev: fs.Stats) => void){
+    //     fs.unwatchFile(filePath, listener);
+    // }
+
+    /**
+     * 监听文件变化（注有可能会一个文件改变会重复调用两次）
+     * @param filePath  需要监听的文件路径，有可能是文件或者文件夹
+     * @param listener  监听变化的函数
+     * @param ignoreDirs 忽略的文件名称列表
+     * @returns 被监听的文件或文件夹路径数组
+     */
+    public static watch(filePath:string, listener:(event: string, filename: string) => any, ignoreDirs?:string[])
+    {
+        let fileStat = fs.statSync(filePath);
+        let watchList = [];
+        if(fileStat.isDirectory())
+        {
+            fs.watch(filePath, listener);
+            let files = fs.readdirSync(filePath);
+            for(let i=0; i<files.length; i++)
+            {
+                let fPath = path.join(filePath, files[i]);
+                if(ignoreDirs && ignoreDirs.includes(files[i]))continue;
+                let fStat = fs.statSync(fPath);
+                if(fStat.isDirectory())
+                {
+                    watchList.push(fPath);
+                    FileUtil.watch(fPath, listener);
+                }
+            }
+        }else{
+            watchList.push(filePath);
+            fs.watch(filePath,listener);
+        }
+        return watchList;
+    }
+
+    /**
+     * 停止监听某个文件夹
+     * @param filePath 
+     */
+    public static unWatch(filePath:string)
+    {
+        let fileStat = fs.statSync(filePath);
+        let watchList = [];
+        if(fileStat.isDirectory())
+        {
+            fs.unwatchFile(filePath);
+            let files = fs.readdirSync(filePath);
+            for(let i=0; i<files.length; i++)
+            {
+                let fPath = path.join(filePath, files[i]);
+                let fStat = fs.statSync(fPath);
+                if(fStat.isDirectory())
+                {
+                    watchList.push(fPath);
+                    FileUtil.unWatch(fPath);
+                }
+            }
+        }else{
+            watchList.push(filePath);
+            fs.unwatchFile(filePath);
+        }
+        return watchList;
+    }
+
+    /**
+     * 停止监听路径数组的文件改变监听
+     * @param watchFileList 
+     */
+    public static unWatchList(watchFileList:string[])
+    {
+        if(!watchFileList)return;
+        for(let i=0; i<watchFileList.length; i++)
+        {
+            fs.unwatchFile(watchFileList[i]);
+        }
+    }
+    
 
 }

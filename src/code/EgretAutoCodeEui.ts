@@ -1,12 +1,15 @@
 
 
 import * as path from "path";
+import * as fs from "fs";
 import { Log } from "../tools/Log";
 import { EXmlParser } from "./ExmlParser";
 import { AppData, FileVisitInfo } from "../AppData";
 import { CMD } from "../tools/CMD";
 import * as vscode from 'vscode';
 import { StringUtil } from "../tools/StringUtils";
+import { FileUtil } from "../tools/FileUtils";
+import { fstat } from "fs";
 
 export interface IParser{
 
@@ -14,21 +17,25 @@ export interface IParser{
 
 export class EgretAutoCodeEui{
 
-    private static _parserDic:{[type:string]:{new (url:string):IParser}} = {};
+    private static _parserDic:{[type:string]:{new (url:string, notShowAlert?:boolean):IParser}} = {};
+    /**观察模式文件改变的文件或文件夹*/
+    private static _watchList:string[] = [];
+    /**观察文件改变的延迟处理的  setTimeOutid */
+    private static _watchFileDelay:{[filePath:string]:boolean} = {};
 
-    public static registerParser(type:string, parser:{new (url:string):IParser})
+    public static registerParser(type:string, parser:{new (url:string, notShowAlert?:boolean):IParser})
     {
         EgretAutoCodeEui._parserDic[type] = parser;
     }
 
-    public static parse(url:string)
+    public static parse(url:string, notShowAlert?:boolean)
     {
         let pathInfo = path.parse(url);
         let type = (pathInfo.ext.charAt(0)==='.')?pathInfo.ext.substr(1):pathInfo.ext;
         let parser = EgretAutoCodeEui._parserDic[type];
         if(parser)
         {
-            new parser(url);
+            new parser(url, notShowAlert);
         }
         // else{
         //     Log.log("没有找到"+type+"对应的解析方法");
@@ -43,6 +50,53 @@ export class EgretAutoCodeEui{
                     this.runFileVisit(fileVisits[i], url);
                 }
             }
+        }
+    }
+    /**开启关闭文件监听 */
+    public static watchFile(filePath:string)
+    {
+        let s = this;
+        let index = s._watchList.indexOf(filePath);
+        if(index != -1)
+        {
+            try{
+                FileUtil.unWatch(filePath);
+                s._watchList.splice(index, 1);
+                Log.log("取消监听文件变化 " + filePath);
+            }catch(e){
+                Log.log("取消监听失败: "+filePath + "error:"+e.message);
+            }
+        }else{
+            // FileUtil.watch(filePath, s.handleWatchFileChange);
+            try{
+                
+                FileUtil.watch(filePath, (eventName, fPath)=>{
+                    EgretAutoCodeEui.handleWatchFileChange(eventName, filePath);
+                });
+                s._watchList.push(filePath);
+                Log.log("监听文件变化 "+filePath);
+            }catch(e){
+                Log.log("添加监听失败: "+filePath + "error:"+e.message);
+            }
+        }
+    }
+
+    private static handleWatchFileChange(eventName:string, filePath:string):void
+    {
+        if(eventName == "rename")
+        {
+            Log.log(`监听到文件${filePath}被删除了，移除文件监听`);
+            EgretAutoCodeEui.watchFile(filePath);
+            return;
+        }
+        if(!EgretAutoCodeEui._watchFileDelay[filePath])
+        {
+            EgretAutoCodeEui._watchFileDelay[filePath] = true;
+            setTimeout(()=>{
+                // Log.log("文件改变： "+filePath+" 自动执行生成");
+                EgretAutoCodeEui.parse(filePath);
+                EgretAutoCodeEui._watchFileDelay[filePath] = false;
+            }, 2000);
         }
     }
 
@@ -91,7 +145,7 @@ export class EgretAutoCodeEui{
         exec = StringUtil.replaceVars(exec, paramDic);
         let runCode = exec+" "+param;
         CMD.run(runCode, this, (str:string)=>{
-            Log.log("执行成功："+runCode);
+            Log.alert("执行成功："+runCode);
             if(vscode.window.activeTextEditor)
             {
                 vscode.window.activeTextEditor.document.save();

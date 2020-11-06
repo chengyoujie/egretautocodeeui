@@ -5,6 +5,7 @@ import { EgretAutoCodeEui } from './code/EgretAutoCodeEui';
 import { AppData } from './AppData';
 import { Log } from './tools/Log';
 import {exec} from "child_process";
+import { FileUtil } from './tools/FileUtils';
 /**
  * 组件激活的时
  * @param context 
@@ -12,7 +13,8 @@ import {exec} from "child_process";
 export function activate(context: vscode.ExtensionContext) {
 
 	
-	console.log('"egretautocodeeui" is now active!');
+	Log.log('"egretautocodeeui" is now active! Please Press F12 To Export Code');
+	AppData.initWatch();
 	if(!AppData.userConfig.auth)
 	{
 		vscode.window.showErrorMessage(`AutoCode 没有配置auth用户名字，最好配置下 ctr+shift+p 输入  Egret AutoCode 打开用户配置 设置auth的值`, '打开配置项').then(selection => {
@@ -29,7 +31,7 @@ export function activate(context: vscode.ExtensionContext) {
 		{
 			EgretAutoCodeEui.parse(curFilePath);
 		}else{
-			Log.log("EgretEuiAutoCode 当前没有打开的文件");
+			Log.alert("EgretEuiAutoCode 当前没有打开的文件");
 		}
 	});
 	//打开生成代码的配置
@@ -52,39 +54,37 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 	//打开模板文件
 	let disposable5 = vscode.commands.registerCommand('egretautocodeeui.egretautocodetemplate', () => {
-		Log.log("准备打开："+AppData.userConfig.templetePath);
+		Log.alert("准备打开："+AppData.userConfig.templetePath);
 		exec('explorer.exe '+AppData.userConfig.templetePath);
 	});
 	//实时生成文件
-	// let disposable6 = vscode.commands.registerCommand('egretautocodeeui.egretautocodetemplate', () => {
-		// const watcher = vscode.workspace.createFileSystemWatcher('*.exml', false, false, false);
-		// watcher.onDidChange(e => { // 文件发生更新
-		// console.log('js changed,' e.fsPath);
-		// });
-		// watcher.onDidCreate(e => { // 新建了js文件
-		// console.log('js created,' e.fsPath);
-		// });
-		// watcher.onDidDelete(e => { // 删除了js文件
-		// console.log('js deleted,' e.fsPath);
-		// });
-	// });
+	let disposable6 = vscode.commands.registerCommand('egretautocodeeui.egretautocodewatch', () => {
+		let curFilePath = vscode.window.activeTextEditor?vscode.window.activeTextEditor.document.fileName:"";
+		if(curFilePath)
+		{
+			EgretAutoCodeEui.watchFile(curFilePath);
+		}else{
+			Log.alert("EgretEuiAutoCode 当前没有打开的文件");
+		}
+		
+	});
 	context.subscriptions.push(disposable1);
 	context.subscriptions.push(disposable2);
 	context.subscriptions.push(disposable3);
 	context.subscriptions.push(disposable4);
 	context.subscriptions.push(disposable5);
-	// context.subscriptions.push(disposable6);
+	context.subscriptions.push(disposable6);
 }
 
 // this method is called when your extension is deactivated
-export function deactivate() { Log.log("EgretEuiAutoCode 组件失效");}
+export function deactivate() { Log.alert("EgretEuiAutoCode 组件失效");}
 //输出到控制台上
-const opc = vscode.window.createOutputChannel('autoCodeOut'); // 可以有多个OutputChannel共存，使用参数名区分
-opc.clear(); // 清空
-let logFun = console.log;
-console.log = function(message?: any, ...optionalParams: any[])
-{
-	opc.appendLine(message); // 追加一行
-	opc.show();
-	logFun(message, ...optionalParams);
-};
+// const opc = vscode.window.createOutputChannel('autoCodeOut'); // 可以有多个OutputChannel共存，使用参数名区分
+// opc.clear(); // 清空
+// let logFun = console.log;
+// console.log = function(message?: any, ...optionalParams: any[])
+// {
+// 	opc.appendLine(message); // 追加一行
+// 	opc.show();
+// 	logFun(message, ...optionalParams);
+// };

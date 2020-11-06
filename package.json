@@ -2,7 +2,7 @@
 	"name": "egretautocodeeui",
 	"displayName": "egretAutoCodeEui",
 	"description": "exml生成对应的代码模块",
-	"version": "0.0.3",
+	"version": "0.0.4",
 	"publisher": "chengyoujie",
 	"icon": "icon/icon.png",
 	"repository": {
@@ -16,11 +16,13 @@
 		"Other"
 	],
 	"activationEvents": [
+		"workspaceContains:egretProperties.json",
 		"onCommand:egretautocodeeui.egretautocodeeui",
 		"onCommand:egretautocodeeui.egretautocodeuserconfig",
 		"onCommand:egretautocodeeui.egretautocodeconfig",
 		"onCommand:egretautocodeeui.egretautocoderefushconfig",
-		"onCommand:egretautocodeeui.egretautocodetemplate"
+		"onCommand:egretautocodeeui.egretautocodetemplate",
+		"onCommand:egretautocodeeui.egretautocodewatch"
 	],
 	"main": "./dist/extension.js",
 	"contributes": {
@@ -44,6 +46,10 @@
 			{
 				"command": "egretautocodeeui.egretautocodetemplate",
 				"title": "Egret AutoCode  打开模板文件夹"
+			},
+			{
+				"command": "egretautocodeeui.egretautocodewatch",
+				"title": "Egret AutoCode  开启/关闭实时监听"
 			}
 		],
 		"keybindings": [
@@ -51,6 +57,11 @@
 				"command": "egretautocodeeui.egretautocodeeui",
 				"key": "f12",
 				"mac": "f12"
+			},
+			{
+				"command": "egretautocodeeui.egretautocodewatch",
+				"key": "Ctrl+f12",
+				"mac": "Ctrl+f12"
 			}
 		],
 		"menus": {

@@ -130,11 +130,41 @@ export class AppData{
     /**更新配置 */
     public static refushConfig()
     {
-        this._autoCodeConfig = null;
-        this._userConfig = null;
+        AppData._autoCodeConfig = null;
+        AppData._userConfig = null;
         AppData.userConfig;
         AppData.autoCodeConfig;
-        Log.log("配置信息更新成功");
+        Log.alert("配置信息更新成功");
+    }
+
+    private static _watchFileIsWait:{[filePath:string]:boolean} = {};
+    /**自动监听配置文件变化 */
+    public static initWatch()
+    {
+        try{
+            FileUtil.watch(this.userConfigPath, (event:string, fileName:string)=>{
+                if(AppData._watchFileIsWait[AppData.userConfigPath])return;
+                AppData._watchFileIsWait[AppData.userConfigPath] = true;
+                setTimeout(()=>{
+                    AppData._watchFileIsWait[AppData.userConfigPath] = false;
+                    AppData._userConfig = null;
+                    AppData.userConfig;
+                    Log.log("用户配置自动更新成功");
+                }, 2000);
+            });
+            FileUtil.watch(AppData.userConfig.autoCodeConfigPath, (event:string, fileName:string)=>{
+                if(AppData._watchFileIsWait[AppData.userConfig.autoCodeConfigPath])return;
+                AppData._watchFileIsWait[AppData.userConfig.autoCodeConfigPath] = true;
+                setTimeout(()=>{
+                    AppData._watchFileIsWait[AppData.userConfig.autoCodeConfigPath] = false;
+                    AppData._autoCodeConfig = null;
+                    AppData.autoCodeConfig;
+                    Log.log("代码生成配置自动更新成功");
+                }, 2000);
+            });
+        }catch(e){
+
+        }
     }
 
     /**
@@ -147,7 +177,7 @@ export class AppData{
             let autoCfgPath = this.userConfig.autoCodeConfigPath;
             if(!fs.existsSync(autoCfgPath))
             {
-                Log.log("系统自动生成:"+autoCfgPath);
+                Log.alert("系统自动生成:"+autoCfgPath);
                 let defaultAutoCfgPath = path.join(__dirname, "./../config/template/autocode.config.json");
                 this._autoCodeConfig = this.getJsonData(defaultAutoCfgPath);
                 FileUtil.copy(defaultAutoCfgPath, autoCfgPath);
@@ -183,7 +213,7 @@ export class AppData{
                             return create;
                         }
                     }catch(e){
-                        Log.log("create中正则错误："+this.userConfig.autoCodeConfigPath+" create:"+create.nameHas);
+                        Log.alert("create中正则错误："+this.userConfig.autoCodeConfigPath+" create:"+create.nameHas);
                     }
                 }else{
                     if(skinFileName.indexOf(keys[j]) != -1)

@@ -62,10 +62,12 @@ export class EXmlParser implements IParser{
     private _xmlObj:egret.XML;
     private _tempVars:TemplateVars = {};
     private _visitDic:{[exportKey:string]:string} = {};
+    private _notShowAlert:boolean;
 
-    constructor(url:string)
+    constructor(url:string, notShowAlert?:boolean)
     {
         this._url = url;
+        this._notShowAlert = notShowAlert;
         if(!fs.existsSync(this._url))
         {
             Log.error("没有找到： "+this._url+"文件");
@@ -75,7 +77,7 @@ export class EXmlParser implements IParser{
         try{
             this._xmlObj = XMLParser.parse(this._content);
         }catch(e){
-            Log.error("XML解析错误"+this._url);
+            Log.error("XML解析错误 "+this._url);
         }
         this.createCode();
     }
@@ -188,7 +190,7 @@ export class EXmlParser implements IParser{
         let templateIds = createInfo.useTemplate.split(",");
         if(!templateIds || templateIds.length==0)
         {
-            Log.log("当前没有对应的模板"+templateVars.baseClsName+" createInfo:"+createInfo.useTemplate);
+            Log.alert("当前没有对应的模板"+templateVars.baseClsName+" createInfo:"+createInfo.useTemplate);
             return;
         }
         // 生成 shortName及ModuleId变量
@@ -236,7 +238,7 @@ export class EXmlParser implements IParser{
         let exists = fs.existsSync(outpath);
         if(!templateInfo.override && exists)//检查文件是否覆盖
         {
-            console.log(outpath+"文件已存在不用生成");
+            Log.log(outpath+" 文件已存在不用生成");
             return;
         }
         if(templateInfo.checkfloder)//检查文件夹是否存在
@@ -244,7 +246,7 @@ export class EXmlParser implements IParser{
             let outpathinfo = path.parse(outpath);
             if(fs.existsSync(outpathinfo.dir))
             {
-                console.log(outpathinfo+"文件夹已存在不用生成");
+                Log.log(outpathinfo+" 文件夹已存在不用生成");
                 return;
             }
         }
@@ -269,7 +271,8 @@ export class EXmlParser implements IParser{
             }
         }
         FileUtil.saveFile(outpath, viewcode);
-        Log.log("创建成功"+outpath);
+        if(!this._notShowAlert)
+            Log.alert("创建成功 "+outpath);
 
     }
 
