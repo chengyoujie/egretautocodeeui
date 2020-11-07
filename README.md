@@ -2,7 +2,7 @@
 
 根据当前编辑器中的exml 文件生成对应的代码，减少重复劳动 [github 地址](https://github.com/chengyoujie/egretautocodeeui) 
 
-![AutoCodeEui自动生成](https://raw.githubusercontent.com/chengyoujie/egretautocodeeui/master/images/usef12.gif)
+![AutoCodeEui自动生成](https://img-blog.csdnimg.cn/20201107162857979.gif)
 
 ---
 
