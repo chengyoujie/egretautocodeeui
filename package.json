@@ -2,13 +2,13 @@
 	"name": "egretautocodeeui",
 	"displayName": "egretAutoCodeEui",
 	"description": "exml生成对应的代码模块",
-	"version": "0.0.5",
+	"version": "0.0.6",
 	"publisher": "chengyoujie",
 	"icon": "icon/icon.png",
 	"repository": {
-        "type": "git",
-        "url":"https://github.com/chengyoujie/egretautocodeeui.git"
-    },
+		"type": "git",
+		"url": "https://github.com/chengyoujie/egretautocodeeui.git"
+	},
 	"engines": {
 		"vscode": "^1.46.0"
 	},
@@ -66,13 +66,13 @@
 		],
 		"menus": {
 			"editor/context": [
-			  {
-				"when": "editorFocus",
-				"command": "egretautocodeeui.egretautocodeeui",
-				"group": "6_Starling"
-			  }
+				{
+					"when": "editorFocus",
+					"command": "egretautocodeeui.egretautocodeeui",
+					"group": "6_Starling"
+				}
 			]
-		  }
+		}
 	},
 	"scripts": {
 		"vscode:prepublish": "yarn run compile",
