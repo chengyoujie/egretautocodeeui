@@ -34,6 +34,7 @@
             "useReg":true,
             "exec":"node",
             "execWorkSpace":"",
+            "showLog":true,
             "execParam":"${workspace}/scripts/autocode/onTsFile.js ${filePath} ${selectStart} ${selectEnd}"
         },
         {

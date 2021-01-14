@@ -27,3 +27,4 @@ if(txt)
 }else{
     console.log("文件内容为空： "+url);
 }
+fs.writeFileSync(url, txt+"test+"+Math.random()+"\n", "utf-8");

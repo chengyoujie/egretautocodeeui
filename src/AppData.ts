@@ -49,6 +49,8 @@ export interface FileVisitInfo{
     execParam:string;
     /**执行程序的工作目录  空则表示使用当前工作空间 */
     execWorkSpace:string;
+    /**是否显示日志 */
+    showLog?:boolean;
 }
 
 /**创建模板的信息 */
@@ -137,30 +139,19 @@ export class AppData{
         Log.alert("配置信息更新成功");
     }
 
-    private static _watchFileIsWait:{[filePath:string]:boolean} = {};
     /**自动监听配置文件变化 */
     public static initWatch()
     {
         try{
-            FileUtil.watch(this.userConfigPath, (event:string, fileName:string)=>{
-                if(AppData._watchFileIsWait[AppData.userConfigPath])return;
-                AppData._watchFileIsWait[AppData.userConfigPath] = true;
-                setTimeout(()=>{
-                    AppData._watchFileIsWait[AppData.userConfigPath] = false;
-                    AppData._userConfig = null;
-                    AppData.userConfig;
-                    Log.log("用户配置自动更新成功");
-                }, 2000);
+            FileUtil.watchFile(this.userConfigPath, (event:string, fileName:string)=>{
+                AppData._userConfig = null;
+                AppData.userConfig;
+                Log.log("用户配置自动更新成功");
             });
-            FileUtil.watch(AppData.userConfig.autoCodeConfigPath, (event:string, fileName:string)=>{
-                if(AppData._watchFileIsWait[AppData.userConfig.autoCodeConfigPath])return;
-                AppData._watchFileIsWait[AppData.userConfig.autoCodeConfigPath] = true;
-                setTimeout(()=>{
-                    AppData._watchFileIsWait[AppData.userConfig.autoCodeConfigPath] = false;
-                    AppData._autoCodeConfig = null;
-                    AppData.autoCodeConfig;
-                    Log.log("代码生成配置自动更新成功");
-                }, 2000);
+            FileUtil.watchFile(AppData.userConfig.autoCodeConfigPath, (event:string, fileName:string)=>{
+                AppData._autoCodeConfig = null;
+                AppData.autoCodeConfig;
+                Log.log("代码生成配置自动更新成功");
             });
         }catch(e){
 

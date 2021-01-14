@@ -4,6 +4,7 @@ import * as fs from "fs";
 import * as path from "path";
 import * as os from "os";
 import { Log } from "../tools/Log";
+import * as vscode from 'vscode';
 // import XMLParser = require("./../../libs/xml/index");
 // import * as XMLParser  from "./../lib/xml/index";
 import * as XMLParser from "./../tools/xml/index";
@@ -261,7 +262,20 @@ export class EXmlParser implements IParser{
                 areaDic[rect[1]] = rect[2];
             }
         }
+        //特殊的替换字符，表示所有的变量及对应的内容
+        if(templateTxt.indexOf("${varDes}") != -1)
+        {
+            templateTxt = templateTxt.replace(/\$\{\s*varDes\s*\}/gi, "$[{varDes}]");
+        }
         var viewcode = StringUtil.replaceVars(templateTxt, this._visitDic, templateVars);
+        
+        //特殊的替换字符，表示所有的变量及对应的内容
+        if(templateTxt.indexOf("$[{varDes}]") != -1)
+        {
+            let varDes = "//方便配置模板内容，模板文件配置好后请删掉 ${varDes} \n//模板文件位置："+AppData.userConfig.templetePath+"\n//模板内所有变量对应的值\n${varDes}=`所有的变量描述，方便编写模板时查看变量对应的内容`\n"+this.getReplaceVarStr(this._visitDic, templateVars)+"\n";
+            viewcode = viewcode.replace(/\$\s*\[\{\s*varDes\s*\}\s*\]/gi, varDes);
+        }
+
         if(exists)//将保护域的内容在重新放到生成的文件中
         {
             for(let key in areaDic)
@@ -271,9 +285,26 @@ export class EXmlParser implements IParser{
             }
         }
         FileUtil.saveFile(outpath, viewcode);
+        vscode.workspace.openTextDocument(outpath);
         if(!this._notShowAlert)
             Log.alert("创建成功 "+outpath);
 
+    }
+
+    private getReplaceVarStr(...varDics:{[key:string]:any}[]){
+        if(!varDics)return;
+        let str = "";
+        for(let i=0; i<varDics.length; i++)
+        {
+            for(let key in varDics[i])
+            {
+                str += "${"+key + "} = `";
+                str += varDics[i][key];
+                str += "`\n"
+                str += "//////////////////////////////////////////////\n"
+            }
+        }
+        return str;
     }
 
     /**根据module名字生成ModuleID  生成规则 moduleName原始字符中大写前加上_并把所有字符转成大写 */

@@ -51,6 +51,7 @@ export class EgretAutoCodeEui{
                 }
             }
         }
+        vscode.workspace.openTextDocument(url);
     }
     /**开启关闭文件监听 */
     public static watchFile(filePath:string)
@@ -60,7 +61,7 @@ export class EgretAutoCodeEui{
         if(index != -1)
         {
             try{
-                FileUtil.unWatch(filePath);
+                FileUtil.unWatchFile(filePath);
                 s._watchList.splice(index, 1);
                 Log.log("取消监听文件变化 " + filePath);
             }catch(e){
@@ -70,7 +71,7 @@ export class EgretAutoCodeEui{
             // FileUtil.watch(filePath, s.handleWatchFileChange);
             try{
                 
-                FileUtil.watch(filePath, (eventName, fPath)=>{
+                FileUtil.watchFile(filePath, (eventName, fPath)=>{
                     EgretAutoCodeEui.handleWatchFileChange(eventName, filePath);
                 });
                 s._watchList.push(filePath);
@@ -152,7 +153,7 @@ export class EgretAutoCodeEui{
             }
         }, (err:string)=>{
             Log.error("执行失败"+runCode+" Error: "+err);
-        }, workSpace);
+        }, workSpace, fileVisit.showLog);
     }
 
 

@@ -172,6 +172,44 @@ export class FileUtil{
         return watchList;
     }
 
+    private static _watchFileContent:{[filePath:string]:any}= {};
+    public static watchFile(filePath:string, listener:(event:string, fileName:string)=>any)
+    {
+        if(!filePath)return;
+        filePath = path.normalize(filePath);
+        if(!fs.existsSync(filePath))
+        {
+            console.log("watchFile 监听文件变化 "+filePath+" 文件不存在");
+            return;
+        }
+        if(fs.statSync(filePath).isDirectory())
+        {
+            console.log("watchFile 监听的不能是文件夹： "+filePath);
+            return;
+        }
+        FileUtil._watchFileContent[filePath] = fs.readFileSync(filePath);
+        fs.watch(filePath,(evt, fileName)=>{
+            let fileContetn:any;
+            if(fs.existsSync(filePath))
+            {
+                fileContetn = fs.readFileSync(filePath);
+            }
+            if(FileUtil._watchFileContent[filePath] != fileContetn)
+            {
+                FileUtil._watchFileContent[filePath] == fileContetn;
+                listener(evt, filePath);
+            }
+        });
+    }
+
+    public static unWatchFile(filePath:string)
+    {
+        if(!filePath)return;
+        filePath = path.normalize(filePath);
+        fs.unwatchFile(filePath);
+        FileUtil._watchFileContent[filePath] = undefined;
+    }
+
     /**
      * 停止监听某个文件夹
      * @param filePath 
