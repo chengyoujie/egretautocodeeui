@@ -169,16 +169,31 @@ export class AppData{
             if(!fs.existsSync(autoCfgPath))
             {
                 Log.alert("系统自动生成:"+autoCfgPath);
-                let defaultAutoCfgPath = path.join(__dirname, "./../config/template/autocode.config.json");
-                this._autoCodeConfig = this.getJsonData(defaultAutoCfgPath);
-                FileUtil.copy(defaultAutoCfgPath, autoCfgPath);
-                //template 中的module也顺便拷过去
-                let defaultAutoTemplatePath = path.join(__dirname, "./../config/template/codetemplate");
-                FileUtil.copy(defaultAutoTemplatePath, this.userConfig.templetePath, false);
-                //script也拷过去 中的module也顺便拷过去
-                let defaultAutoScriptPath = path.join(__dirname, "./../config/template/autocodescript/onTsFile.js");
-                FileUtil.copy(defaultAutoScriptPath, this.workspace+"/scripts/autocode/onTsFile.js", false);
+                
+                if(fs.existsSync(path.join(this.workspace, "egretProperties.json")))//非egret项目不拷贝
+                {
+                    let defaultAutoCfgPath = path.join(__dirname, "./../config/template/autocode.config.json");
+                    this._autoCodeConfig = this.getJsonData(defaultAutoCfgPath);
+                    FileUtil.copy(defaultAutoCfgPath, autoCfgPath);
+                     //template 中的module也顺便拷过去
+                    let defaultAutoTemplatePath = path.join(__dirname, "./../config/template/codetemplate");
+                    FileUtil.copy(defaultAutoTemplatePath, this.userConfig.templetePath, false);
+                    //script也拷过去 中的module也顺便拷过去
+                    let defaultAutoScriptPath = path.join(__dirname, "./../config/template/autocodescript/onTsFile.js");
+                    FileUtil.copy(defaultAutoScriptPath, this.workspace+"/scripts/autocode/onTsFile.js", false);
+                    console.log("当前是egret项目 自动模板")
+                }else{
+                    let defaultAutoCfgPath = path.join(__dirname, "./../config/template/autocode_notegret.config.json");
+                    this._autoCodeConfig = this.getJsonData(defaultAutoCfgPath);
+                    FileUtil.copy(defaultAutoCfgPath, autoCfgPath);
+                    let defaultAutoScriptPath = path.join(__dirname, "./../config/template/autocodescript/onTsFile.js");
+                    FileUtil.copy(defaultAutoScriptPath, this.workspace+"/scripts/autocode/onTsFile.js", false);
+                    console.log("当前不是egret项目")
+                }
+               
             }else{ 
+
+                
                 this._autoCodeConfig = this.getJsonData(autoCfgPath);
             }
         }
