@@ -24,7 +24,7 @@
             "typeHas":"eui.Button",
             "code1":"\n\t\t\tthis.${id}.addEventListener(egret.TouchEvent.TOUCH_TAP, this.handleClk${ShortId}, this)",
             "exportCode1":"initEvent",
-            "code2":"\n\t\t/**${id}点击事件处理**/\n\t\tprivate handleClk${ShortId}(){\n\t\t\n\t\t}\n\t\t",
+            "code2":"\n\t\t//${id}点击事件处理\n\t\tprivate handleClk${ShortId}(){\n\t\t\n\t\t}\n\t\t",
             "exportCode2":"eventFunction"
         }
     ],

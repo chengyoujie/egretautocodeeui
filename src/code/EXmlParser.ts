@@ -272,7 +272,7 @@ export class EXmlParser implements IParser{
         //特殊的替换字符，表示所有的变量及对应的内容
         if(templateTxt.indexOf("$[{varDes}]") != -1)
         {
-            let varDes = "//方便配置模板内容，模板文件配置好后请删掉 ${varDes} \n//模板文件位置："+AppData.userConfig.templetePath+"\n//模板内所有变量对应的值\n${varDes}=`所有的变量描述，方便编写模板时查看变量对应的内容`\n"+this.getReplaceVarStr(this._visitDic, templateVars)+"\n";
+            let varDes = "//方便配置模板内容，模板文件配置好后请删掉 ${varDes} \n//模板文件位置："+AppData.userConfig.templetePath+"\n//模板内所有变量对应的值\n${varDes}=`所有的变量描述，方便编写模板时查看变量对应的内容`\n/**\n"+this.getReplaceVarStr(this._visitDic, templateVars)+"\n**/\n";
             viewcode = viewcode.replace(/\$\s*\[\{\s*varDes\s*\}\s*\]/gi, varDes);
         }
 

@@ -1,4 +1,4 @@
-namespace byh {
+namespace game {
     /**
      * AutoCodeEui 生成的界面 
      * euiPath:${shortSkinPath}  
@@ -26,4 +26,3 @@ namespace byh {
         }
     }
 }
-${varDes}
