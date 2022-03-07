@@ -11,10 +11,8 @@ import { FileUtil } from './tools/FileUtils';
  * @param context 
  */
 export function activate(context: vscode.ExtensionContext) {
-
-	
 	Log.log('"egretautocodeeui" is now active! Please Press F12 To Export Code');
-	AppData.initWatch();
+	// AppData.initWatch();
 	if(!AppData.userConfig.auth)
 	{
 		vscode.window.showErrorMessage(`AutoCode 没有配置auth用户名字，最好配置下 ctr+shift+p 输入  Egret AutoCode 打开用户配置 设置auth的值`, '打开配置项').then(selection => {

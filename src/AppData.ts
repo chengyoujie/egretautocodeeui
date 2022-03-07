@@ -172,6 +172,7 @@ export class AppData{
                 
                 if(fs.existsSync(path.join(this.workspace, "egretProperties.json")))//非egret项目不拷贝
                 {
+                    console.log(this.workspace+" 目录中存在 egretProperties.json 认为是白鹭项目，使用白鹭的生成模板");
                     let defaultAutoCfgPath = path.join(__dirname, "./../config/template/autocode.config.json");
                     this._autoCodeConfig = this.getJsonData(defaultAutoCfgPath);
                     FileUtil.copy(defaultAutoCfgPath, autoCfgPath);
@@ -181,14 +182,15 @@ export class AppData{
                     //script也拷过去 中的module也顺便拷过去
                     let defaultAutoScriptPath = path.join(__dirname, "./../config/template/autocodescript/onTsFile.js");
                     FileUtil.copy(defaultAutoScriptPath, this.workspace+"/scripts/autocode/onTsFile.js", false);
-                    console.log("当前是egret项目 自动模板")
+                    console.log("模板生成完毕")
                 }else{
+                    console.log(this.workspace+" 目录中不存在 egretProperties.json 认为是不是白鹭项目，使用非白鹭引擎的生成模板");
                     let defaultAutoCfgPath = path.join(__dirname, "./../config/template/autocode_notegret.config.json");
                     this._autoCodeConfig = this.getJsonData(defaultAutoCfgPath);
                     FileUtil.copy(defaultAutoCfgPath, autoCfgPath);
                     let defaultAutoScriptPath = path.join(__dirname, "./../config/template/autocodescript/onTsFile.js");
                     FileUtil.copy(defaultAutoScriptPath, this.workspace+"/scripts/autocode/onTsFile.js", false);
-                    console.log("当前不是egret项目")
+                    console.log("模板生成完毕")
                 }
                
             }else{ 

@@ -1,5 +1,5 @@
 {
-    "auth":"cyj",
+    "auth":"",
     "templetePath":"${workspace}/template/autocode",
     "autoCodeConfigPath":"${workspace}/autocode.config.json"
 }

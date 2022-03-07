@@ -2,7 +2,7 @@
 	"name": "egretautocodeeui",
 	"displayName": "egretAutoCodeEui",
 	"description": "exml生成对应的代码模块",
-	"version": "0.0.11",
+	"version": "0.0.13",
 	"publisher": "chengyoujie",
 	"icon": "icon/icon.png",
 	"repository": {
